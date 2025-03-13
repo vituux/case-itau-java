@@ -1,0 +1,30 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
+spring:
+  application:
+    name: boleto-payment-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/boleto_db
+    username: boleto
+    password: boleto
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+
+# Configuração AWS (padrão para ambiente de produção)
+aws:
+  region: us-east-1
+  sns:
+    topic-arn: arn:aws:sns:us-east-1:000000000000:boleto-payment-notifications
+  s3:
+    bucket-name: boleto-receipts
+  credentials:
+    access-key: ${AWS_ACCESS_KEY_ID}
+    secret-key: ${AWS_SECRET_ACCESS_KEY}

@@ -1,0 +1,25 @@
+spring:
+  config:
+    activate:
+      on-profile: local
+  datasource:
+    url: jdbc:postgresql://localhost:5432/boleto_db
+    username: boleto
+    password: boleto
+
+aws:
+  endpoint: http://localhost:4566
+  region: us-east-1
+  sns:
+    topic-arn: arn:aws:sns:us-east-1:000000000000:boleto-payment-notifications
+  s3:
+    bucket-name: boleto-receipts
+  credentials:
+    access-key: test
+    secret-key: test
+
+logging:
+  level:
+    com.banco: DEBUG
+    org.springframework: INFO
+    com.amazonaws: DEBUG

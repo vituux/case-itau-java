@@ -1,0 +1,40 @@
+# docker-compose.yml
+version: '3.8'
+
+services:
+  localstack:
+    container_name: boleto-localstack
+    image: localstack/localstack:latest
+    ports:
+      - "4566:4566"  # Porta única para todos os serviços AWS
+    environment:
+      - SERVICES=s3,sqs,sns
+      - DEBUG=1
+      - DATA_DIR=/tmp/localstack/data
+      - AWS_DEFAULT_REGION=us-east-1
+      - HOSTNAME_EXTERNAL=localstack
+    volumes:
+      - "./docker:/docker-entrypoint-initaws.d"  # Scripts de inicialização
+    networks:
+      - boleto-network
+
+  postgres:
+    image: postgres:14
+    container_name: boleto-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=boleto
+      - POSTGRES_PASSWORD=boleto
+      - POSTGRES_DB=boleto_db
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - boleto-network
+
+volumes:
+  postgres-data:
+
+networks:
+  boleto-network:
+    driver: bridge
