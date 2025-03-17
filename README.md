@@ -26,8 +26,8 @@ Um microserviço resiliente para processamento de pagamentos de boletos bancári
 ### Clone o repositório
 
 ```bash
-git clone https://github.com/seu-usuario/renegociacao-pagamentos.git
-cd renegociacao-pagamentos
+git clone https://github.com/vituux/case-itau-java.git
+cd case-itau-java
 ```
 
 ### Inicie o ambiente local com Docker Compose
