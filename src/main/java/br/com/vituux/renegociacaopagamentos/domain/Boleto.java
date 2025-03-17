@@ -41,11 +41,12 @@ public class Boleto {
 
     private String transactionId;
 
-    // Construtor padrão
+    @Version
+    private Long version;
+
     public Boleto() {
     }
 
-    // Construtor com todos os campos
     public Boleto(Long id, String barcode, String beneficiary, String payer, BigDecimal value,
                   LocalDate dueDate, PaymentStatus status, LocalDateTime paymentDate,
                   String paymentMethod, String receiptUrl, String transactionId) {
@@ -67,6 +68,13 @@ public class Boleto {
         return id;
     }
 
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
+    }
     public void setId(Long id) {
         this.id = id;
     }

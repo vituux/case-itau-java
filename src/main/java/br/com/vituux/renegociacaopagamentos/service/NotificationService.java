@@ -6,6 +6,7 @@ import com.amazonaws.services.sns.model.PublishRequest;
 import com.amazonaws.services.sns.model.PublishResult;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.resilience4j.retry.annotation.Retry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,18 +18,20 @@ import java.util.Map;
 @Service
 public class NotificationService {
 
+    private static final Logger log = LoggerFactory.getLogger(NotificationService.class);
+
     private final AmazonSNS amazonSNS;
     private final ObjectMapper objectMapper;
+
+    @Value("${aws.sns.topic-arn}")
+    private String topicArn;
 
     public NotificationService(AmazonSNS amazonSNS, ObjectMapper objectMapper) {
         this.amazonSNS = amazonSNS;
         this.objectMapper = objectMapper;
     }
-    private static final Logger log = LoggerFactory.getLogger(NotificationService.class);
 
-    @Value("${aws.sns.topic-arn}")
-    private String topicArn;
-
+    @Retry(name = "snsService")
     public void notifyPayment(Boleto boleto) {
         try {
             Map<String, Object> messageData = new HashMap<>();
@@ -51,8 +54,10 @@ public class NotificationService {
             log.info("Notificação de pagamento enviada. MessageId: {}", result.getMessageId());
         } catch (JsonProcessingException e) {
             log.error("Erro ao serializar notificação: {}", e.getMessage());
+            throw new RuntimeException("Erro ao preparar notificação", e);
         } catch (Exception e) {
             log.error("Erro ao enviar notificação: {}", e.getMessage());
+            throw new RuntimeException("Erro ao enviar notificação", e);
         }
     }
 }

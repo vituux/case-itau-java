@@ -14,6 +14,9 @@ aws:
     topic-arn: arn:aws:sns:us-east-1:000000000000:boleto-payment-notifications
   s3:
     bucket-name: boleto-receipts
+  sqs:
+    payment-queue: http://localhost:4566/000000000000/boleto-payment-queue
+    polling-interval: 5000
   credentials:
     access-key: test
     secret-key: test
@@ -23,3 +26,34 @@ logging:
     com.banco: DEBUG
     org.springframework: INFO
     com.amazonaws: DEBUG
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      s3Service:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: 3
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        waitDurationInOpenState: 10s
+        failureRateThreshold: 50
+        eventConsumerBufferSize: 10
+      snsService:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: 3
+        waitDurationInOpenState: 5s
+        failureRateThreshold: 50
+  retry:
+    instances:
+      s3Service:
+        maxAttempts: 3
+        waitDuration: 1s
+        enableExponentialBackoff: true
+        exponentialBackoffMultiplier: 2
+      snsService:
+        maxAttempts: 3
+        waitDuration: 500ms
+        enableExponentialBackoff: true

@@ -43,7 +43,7 @@ public class BoletoPaymentServiceIntegrationTest {
         testBoleto = new Boleto();
         // Cria um boleto para teste
         testBoleto = Boleto.builder()
-                .barcode("34191790010104351004791020150008291070026999")
+                .barcode("34191790010104351004791020150008291070026923")
                 .beneficiary("Empresa Teste")
                 .payer("Cliente Teste")
                 .value(new BigDecimal("100.00"))
